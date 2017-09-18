@@ -36,6 +36,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.yosef.bakingapp.view.activity.ItemListActivity" />
         </activity>
+
         <receiver android:name=".widget.BakingAppWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -43,6 +44,11 @@
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/appwidget_info" />
         </receiver>
+
+        <service
+            android:name=".widget.BakingAppWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            android:exported="true"/>
     </application>
 
 </manifest>

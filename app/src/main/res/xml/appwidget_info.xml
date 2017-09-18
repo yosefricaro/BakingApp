@@ -3,7 +3,7 @@
     android:minHeight="100dp"
     android:minResizeHeight="100dip"
     android:minResizeWidth="100dip"
-    android:updatePeriodMillis="86400000"
+    android:updatePeriodMillis="0"
     android:previewImage="@mipmap/ic_launcher"
     android:initialLayout="@layout/item_list"
     android:resizeMode="horizontal|vertical"

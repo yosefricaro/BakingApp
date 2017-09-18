@@ -8,7 +8,13 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 
 import com.example.yosef.bakingapp.R;
+import com.example.yosef.bakingapp.model.Recipe;
+import com.example.yosef.bakingapp.model.StaticRecipe;
+import com.google.gson.GsonBuilder;
 
+/**
+ * Created by iip on 8/10/17.
+ */
 
 public class BakingAppWidgetProvider extends AppWidgetProvider {
 
@@ -28,12 +34,20 @@ public class BakingAppWidgetProvider extends AppWidgetProvider {
 
     @SuppressWarnings("deprecation")
     @SuppressLint("NewApi")
-    private RemoteViews initViews(final Context context,
-                                  AppWidgetManager widgetManager, final int widgetId) {
+    private RemoteViews initViews(Context context,
+                                  AppWidgetManager widgetManager, int widgetId) {
 
-        final RemoteViews mView = new RemoteViews(context.getPackageName(),
+        RemoteViews mView = new RemoteViews(context.getPackageName(),
                 R.layout.test_layout);
 
+        Intent intent = new Intent(context, BakingAppWidgetService.class);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+
+        Recipe recipe = StaticRecipe.getRecipe();
+        String sRecipe = new GsonBuilder().create().toJson(recipe);
+
+        intent.putExtra(BakingAppDataProvider.SELECTED_RECIPE, sRecipe);
+        mView.setRemoteAdapter(widgetId, R.id.list, intent);
 
         return mView;
     }

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import com.example.yosef.bakingapp.R;
 import com.example.yosef.bakingapp.model.Recipe;
 import com.example.yosef.bakingapp.util.RetrofitUtil;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Created by iip on 8/12/17.
+ */
 
 public class BakingAppWidgetConfigurationActivity extends AppCompatActivity {
 
@@ -48,29 +53,46 @@ public class BakingAppWidgetConfigurationActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.fragment_recipe);
-        final RecyclerView rv = (RecyclerView) findViewById(com.example.yosef.bakingapp.R.id.rv);
-        rv.setLayoutManager(new LinearLayoutManager(this));
+
+        final ProgressBar mLoading = (ProgressBar) findViewById(R.id.progress_bar);
+        mLoading.setVisibility(View.VISIBLE);
+
+
+        final RecyclerView rv = (RecyclerView) findViewById(R.id.rv);
+        final List<Recipe> lr = new ArrayList<>();
         RetrofitUtil.getRecipeService().getRecipe().enqueue(new Callback<List<Recipe>>() {
             @Override
             public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
                 List<Recipe> lr = response.body();
-                rv.setAdapter(new RecyclerViewWidgetAdapter(lr));
+                getResponse(rv, lr, mLoading);
             }
 
             @Override
             public void onFailure(Call<List<Recipe>> call, Throwable t) {
+                mLoading.setVisibility(View.INVISIBLE);
                 Toast.makeText(BakingAppWidgetConfigurationActivity.this, "Tidak ada internet", Toast.LENGTH_SHORT).show();
                 Log.e("error", t.getMessage());
             }
         });
+        getResponse(rv, lr, mLoading);
+    }
 
-
+    public void getResponse(RecyclerView recyclerView, List<Recipe> lr, ProgressBar mLoading){
+        RecyclerViewWidgetAdapter rcAdapter = new RecyclerViewWidgetAdapter(lr);
+        recyclerView.setAdapter(rcAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mLoading.setVisibility(View.INVISIBLE);
     }
 
     private void execute(Recipe recipe){
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         RemoteViews views = initViews(this, appWidgetManager, mAppWidgetId, recipe);
         appWidgetManager.updateAppWidget(mAppWidgetId, views);
+
+        Intent resultValue = new Intent(this, BakingAppWidgetService.class);
+        resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+
+        setResult(RESULT_OK, resultValue);
 
         finish();
     }
@@ -83,6 +105,13 @@ public class BakingAppWidgetConfigurationActivity extends AppCompatActivity {
         RemoteViews mView = new RemoteViews(context.getPackageName(),
                 R.layout.test_layout);
 
+        Intent intent = new Intent(context, BakingAppWidgetService.class);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+
+        String sRecipe = new GsonBuilder().create().toJson(recipe);
+
+        intent.putExtra(BakingAppDataProvider.SELECTED_RECIPE, sRecipe);
+        mView.setRemoteAdapter(widgetId, R.id.list, intent);
 
         return mView;
     }
