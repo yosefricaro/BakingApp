@@ -38,7 +38,7 @@ public class BakingAppWidgetProvider extends AppWidgetProvider {
                                   AppWidgetManager widgetManager, int widgetId) {
 
         RemoteViews mView = new RemoteViews(context.getPackageName(),
-                R.layout.test_layout);
+                R.layout.collection_widget);
 
         Intent intent = new Intent(context, BakingAppWidgetService.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
@@ -47,7 +47,7 @@ public class BakingAppWidgetProvider extends AppWidgetProvider {
         String sRecipe = new GsonBuilder().create().toJson(recipe);
 
         intent.putExtra(BakingAppDataProvider.SELECTED_RECIPE, sRecipe);
-        mView.setRemoteAdapter(widgetId, R.id.list, intent);
+        mView.setRemoteAdapter(widgetId, R.id.widget_list, intent);
 
         return mView;
     }

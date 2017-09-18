@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.yosef.bakingapp.R;
 import com.example.yosef.bakingapp.model.Recipe;
+import com.example.yosef.bakingapp.model.StaticRecipe;
 import com.example.yosef.bakingapp.util.RetrofitUtil;
 import com.google.gson.GsonBuilder;
 
@@ -52,13 +53,13 @@ public class BakingAppWidgetConfigurationActivity extends AppCompatActivity {
                     AppWidgetManager.INVALID_APPWIDGET_ID);
         }
 
-        setContentView(R.layout.fragment_recipe);
+        setContentView(R.layout.activity_widget);
 
         final ProgressBar mLoading = (ProgressBar) findViewById(R.id.progress_bar);
         mLoading.setVisibility(View.VISIBLE);
 
 
-        final RecyclerView rv = (RecyclerView) findViewById(R.id.rv);
+        final RecyclerView rv = (RecyclerView) findViewById(R.id.recycler_view2);
         final List<Recipe> lr = new ArrayList<>();
         RetrofitUtil.getRecipeService().getRecipe().enqueue(new Callback<List<Recipe>>() {
             @Override
@@ -103,7 +104,7 @@ public class BakingAppWidgetConfigurationActivity extends AppCompatActivity {
                                   AppWidgetManager widgetManager, int widgetId, Recipe recipe) {
 
         RemoteViews mView = new RemoteViews(context.getPackageName(),
-                R.layout.test_layout);
+                R.layout.collection_widget);
 
         Intent intent = new Intent(context, BakingAppWidgetService.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
@@ -111,7 +112,7 @@ public class BakingAppWidgetConfigurationActivity extends AppCompatActivity {
         String sRecipe = new GsonBuilder().create().toJson(recipe);
 
         intent.putExtra(BakingAppDataProvider.SELECTED_RECIPE, sRecipe);
-        mView.setRemoteAdapter(widgetId, R.id.list, intent);
+        mView.setRemoteAdapter(widgetId, R.id.widget_list, intent);
 
         return mView;
     }
@@ -142,6 +143,7 @@ public class BakingAppWidgetConfigurationActivity extends AppCompatActivity {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    StaticRecipe.setRecipe(recipe);
                     execute(recipe);
                 }
             });
