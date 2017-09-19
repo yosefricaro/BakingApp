@@ -43,9 +43,15 @@ public class ItemDetailFragment extends Fragment {
     @BindView(R.id.rightButton) Button right;
     private SimpleExoPlayer player;
 
+    private static final String PLAYWHENREADY = "PLAYWHENREADY";
     private boolean playWhenReady= true;
+
+    private static final String CURRENTWINDOW = "CURRENTWINDOW";
     private int currentWindow;
+
+    private static final String PLAYBACKPOSITION = "PLAYBACKPOSITION";
     private long playBackPosition;
+
     private String videoURL;
     private int position;
     /**
@@ -73,6 +79,11 @@ public class ItemDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (savedInstanceState != null){
+            playWhenReady = savedInstanceState.getBoolean(PLAYWHENREADY);
+            currentWindow = savedInstanceState.getInt(CURRENTWINDOW);
+            playBackPosition = savedInstanceState.getLong(PLAYBACKPOSITION);
+        }
         View rootView = inflater.inflate(R.layout.step_cardview, container, false);
         ButterKnife.bind(this, rootView);
 
@@ -107,6 +118,14 @@ public class ItemDetailFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(PLAYWHENREADY, playWhenReady);
+        outState.putInt(CURRENTWINDOW, currentWindow);
+        outState.putLong(PLAYBACKPOSITION, playBackPosition);
     }
 
     @Override
