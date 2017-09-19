@@ -45,7 +45,7 @@ public class ItemDetailActivityTest {
                         withParent(allOf(withId(R.id.refreshContainer),
                                 withParent(withId(R.id.activity_main)))),
                         isDisplayed()));
-        recyclerView.perform(actionOnItemAtPosition(0, click()));
+        recyclerView.perform(actionOnItemAtPosition(1, click()));
 
         ViewInteraction recyclerView2 = onView(
                 allOf(withId(R.id.item_list), isDisplayed()));
@@ -64,7 +64,7 @@ public class ItemDetailActivityTest {
 
         ViewInteraction recyclerView3 = onView(
                 allOf(withId(R.id.item_list), isDisplayed()));
-        recyclerView3.perform(actionOnItemAtPosition(0, click()));
+        recyclerView3.perform(actionOnItemAtPosition(1, click()));
 
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:

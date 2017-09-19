@@ -123,6 +123,11 @@ public class ItemDetailFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        if (player != null) {
+            playWhenReady = player.getPlayWhenReady();
+            currentWindow = player.getCurrentWindowIndex();
+            playBackPosition = player.getCurrentPosition();
+        }
         outState.putBoolean(PLAYWHENREADY, playWhenReady);
         outState.putInt(CURRENTWINDOW, currentWindow);
         outState.putLong(PLAYBACKPOSITION, playBackPosition);
